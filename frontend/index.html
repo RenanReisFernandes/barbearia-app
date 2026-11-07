@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Barbearia - Agendamento Online</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="container header-inner">
+        <div class="logo" onclick="showPage('home')">
+          <span class="logo-icon">✂</span>
+          <span class="logo-text">Barbearia<span>Pro</span></span>
+        </div>
+        <nav class="nav" id="nav">
+          <button class="nav-link" data-page="home">Início</button>
+          <button class="nav-link" data-page="agenda" id="nav-agenda" style="display:none">Agendar</button>
+          <button class="nav-link" data-page="meus" id="nav-meus" style="display:none">Meus Agendamentos</button>
+          <button class="nav-link" data-page="admin" id="nav-admin" style="display:none">Painel Admin</button>
+        </nav>
+        <div class="auth-area" id="auth-area">
+          <button class="btn btn-outline" onclick="showPage('login')">Entrar</button>
+          <button class="btn btn-primary" onclick="showPage('register')">Cadastrar</button>
+        </div>
+        <div class="user-area" id="user-area" style="display:none">
+          <span class="user-name" id="user-name"></span>
+          <button class="btn btn-outline btn-sm" onclick="logout()">Sair</button>
+        </div>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- HOME -->
+      <section id="page-home" class="page active">
+        <div class="hero">
+          <div class="container">
+            <h1>Agende seu horário<br>com praticidade</h1>
+            <p class="hero-sub">Esqueça as mensagens no WhatsApp. Veja horários disponíveis em tempo real e marque seu corte ou barba em poucos cliques.</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary btn-lg" onclick="goToAgenda()">Agendar agora</button>
+              <button class="btn btn-outline btn-lg" onclick="showPage('login')">Já tenho conta</button>
+            </div>
+          </div>
+        </div>
+        <div class="features container">
+          <div class="feature-card">
+            <div class="feature-icon">📅</div>
+            <h3>Agenda em tempo real</h3>
+            <p>Visualize apenas os horários realmente livres. Sem surpresas.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">✂</div>
+            <h3>Serviços profissionais</h3>
+            <p>Corte, barba, sobrancelha e combos. Escolha o que precisa.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>Cancelamento fácil</h3>
+            <p>Cancele com antecedência mínima e libere a vaga para outros.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- LOGIN -->
+      <section id="page-login" class="page">
+        <div class="auth-card container">
+          <h2>Entrar</h2>
+          <p class="auth-sub">Acesse sua conta para agendar</p>
+          <form id="form-login" onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="login-email">E-mail</label>
+              <input type="email" id="login-email" required placeholder="seu@email.com" />
+            </div>
+            <div class="form-group">
+              <label for="login-password">Senha</label>
+              <input type="password" id="login-password" required placeholder="••••••••" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+          </form>
+          <p class="auth-switch">Não tem conta? <a href="#" onclick="showPage('register'); return false;">Cadastre-se</a></p>
+          <div class="demo-accounts">
+            <p><strong>Contas de demonstração:</strong></p>
+            <p>Admin: admin@barbearia.com / admin123</p>
+            <p>Cliente: cliente@email.com / cliente123</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- REGISTER -->
+      <section id="page-register" class="page">
+        <div class="auth-card container">
+          <h2>Criar conta</h2>
+          <p class="auth-sub">Preencha seus dados para começar</p>
+          <form id="form-register" onsubmit="handleRegister(event)">
+            <div class="form-group">
+              <label for="reg-name">Nome completo</label>
+              <input type="text" id="reg-name" required placeholder="Seu nome" />
+            </div>
+            <div class="form-group">
+              <label for="reg-email">E-mail</label>
+              <input type="email" id="reg-email" required placeholder="seu@email.com" />
+            </div>
+            <div class="form-group">
+              <label for="reg-phone">Telefone</label>
+              <input type="tel" id="reg-phone" required placeholder="(11) 99999-9999" />
+            </div>
+            <div class="form-group">
+              <label for="reg-password">Senha</label>
+              <input type="password" id="reg-password" required minlength="6" placeholder="Mínimo 6 caracteres" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
+          </form>
+          <p class="auth-switch">Já tem conta? <a href="#" onclick="showPage('login'); return false;">Entrar</a></p>
+        </div>
+      </section>
+
+      <!-- AGENDA (Agendar) -->
+      <section id="page-agenda" class="page">
+        <div class="container">
+          <h2 class="page-title">Agendar Serviço</h2>
+          <div class="agenda-layout">
+            <div class="agenda-left">
+              <div class="card">
+                <h3>1. Escolha o serviço</h3>
+                <div id="services-list" class="services-list">
+                  <!-- filled by JS -->
+                </div>
+              </div>
+              <div class="card">
+                <h3>2. Escolha a data</h3>
+                <input type="date" id="agenda-date" class="date-input" />
+                <p class="hint" id="date-hint">Selecione um dia de segunda a sábado.</p>
+              </div>
+            </div>
+            <div class="agenda-right">
+              <div class="card">
+                <h3>3. Horários disponíveis</h3>
+                <div id="slots-container" class="slots-grid">
+                  <p class="empty-state">Selecione um serviço e uma data.</p>
+                </div>
+              </div>
+              <div class="card summary-card" id="summary-card" style="display:none">
+                <h3>Resumo</h3>
+                <div id="summary-content"></div>
+                <button class="btn btn-primary btn-block" id="btn-confirm" onclick="confirmAppointment()">Confirmar Agendamento</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEUS AGENDAMENTOS -->
+      <section id="page-meus" class="page">
+        <div class="container">
+          <h2 class="page-title">Meus Agendamentos</h2>
+          <div id="my-appointments" class="appointments-list">
+            <p class="empty-state">Carregando...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ADMIN PANEL -->
+      <section id="page-admin" class="page">
+        <div class="container">
+          <h2 class="page-title">Painel do Administrador</h2>
+          <div class="admin-tabs">
+            <button class="tab active" data-tab="today" onclick="switchAdminTab('today')">Agenda do Dia</button>
+            <button class="tab" data-tab="block" onclick="switchAdminTab('block')">Bloquear Horários</button>
+            <button class="tab" data-tab="clients" onclick="switchAdminTab('clients')">Clientes</button>
+            <button class="tab" data-tab="history" onclick="switchAdminTab('history')">Histórico</button>
+          </div>
+
+          <div id="admin-today" class="admin-panel active">
+            <div class="admin-date-row">
+              <label>Data:</label>
+              <input type="date" id="admin-date" />
+              <button class="btn btn-outline btn-sm" onclick="loadAdminDay()">Atualizar</button>
+            </div>
+            <div id="admin-day-content">
+              <p class="empty-state">Carregando...</p>
+            </div>
+          </div>
+
+          <div id="admin-block" class="admin-panel">
+            <div class="card">
+              <h3>Bloquear horário</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Data</label>
+                  <input type="date" id="block-date" />
+                </div>
+                <div class="form-group">
+                  <label>Horário</label>
+                  <select id="block-time"></select>
+                </div>
+                <button class="btn btn-primary" onclick="blockSlot()">Bloquear</button>
+              </div>
+              <div id="blocked-list" class="blocked-list"></div>
+            </div>
+          </div>
+
+          <div id="admin-clients" class="admin-panel">
+            <div id="clients-list" class="clients-table-wrap">
+              <p class="empty-state">Carregando...</p>
+            </div>
+          </div>
+
+          <div id="admin-history" class="admin-panel">
+            <div id="history-list" class="appointments-list">
+              <p class="empty-state">Carregando...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>Projeto Integrador — Sistema de Agendamento de Barbearia · Banco de dados em memória</p>
+      </div>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
