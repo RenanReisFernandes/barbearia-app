@@ -1,0 +1,13 @@
+{
+  "name": "barbearia-agendamento",
+  "version": "1.0.0",
+  "description": "Sistema Web de Agendamento para Barbearias - Projeto Integrador",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["barbearia", "agendamento", "nodejs"],
+  "author": "Projeto Integrador",
+  "license": "MIT"
+}
